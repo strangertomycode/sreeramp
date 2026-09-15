@@ -1,4 +1,3 @@
-baseURL: http://localhost:1313/
 locale: en
 defaultContentLanguage: en
 defaultContentLanguageInSubdir: false
