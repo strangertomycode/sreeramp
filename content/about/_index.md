@@ -9,12 +9,12 @@ date: 2026-09-15T00:00:00+05:30
 
 links:
   - name: "Instagram"
-    url: "https://www.instagram.com/yourusername/"
+    url: "https://www.instagram.com/strangertomyheart/"
     icon: "instagram"
     description: "Find me on Instagram"
 
   - name: "GitHub"
-    url: "https://github.com/yourusername"
+    url: "https://github.com/strangertomycode"
     icon: "github"
     description: "Things I've built, broken, and occasionally fixed"
 ---

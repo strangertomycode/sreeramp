@@ -9,14 +9,14 @@ images:
 
 # Favicon
 favicon:
-  svg: "/favicon.svg" # SVG format favicon (recommended)
+  svg: "/favicon.png" # SVG format favicon (recommended)
 
 # Author info
 author:
   name: "Sreeram P"
   title: "strangertomyheart"
   description: "Just writing things down."
-  avatar: "/images/avatar.svg"
+  avatar: "/images/avatar.jpg"
   social:
     - name: "Instagram" 
       url: "https://www.instagram.com/yourusername" 
