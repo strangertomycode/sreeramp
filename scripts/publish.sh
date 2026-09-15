@@ -34,6 +34,6 @@ else
 fi
 
 echo "Pushing to GitHub (this triggers the Actions deploy)..."
-git push origin main
+git push origin master
 
 echo "Done. Check the Actions tab on GitHub to watch the deploy."
