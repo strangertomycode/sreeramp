@@ -1,0 +1,24 @@
+# Hugo generated output
+
+/public/
+/resources/
+
+# Hugo module vendor directory
+
+/_vendor/
+
+# OS files
+
+.DS_Store
+Thumbs.db
+
+# Editor files
+
+.vscode/
+.idea/
+
+# Temporary files
+
+*.swp
+*.swo
+*~

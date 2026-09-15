@@ -1,0 +1,294 @@
+{{- $currentSeries := .GetTerms "series" -}}
+{{- $title := .Title | strings.TrimSpace -}}
+
+<div class="post-meta mb-14">
+
+  {{ with $title }}
+    <h1 class="text-foreground mb-6 max-w-4xl text-4xl font-bold leading-[1.08] tracking-tight md:text-5xl lg:text-6xl">
+      {{ . }}
+    </h1>
+  {{ end }}
+
+  {{ if .Params.summary }}
+    <p class="text-muted-foreground mb-8 max-w-2xl text-lg leading-relaxed md:text-xl">
+      {{ .Params.summary | plainify }}
+    </p>
+  {{ end }}
+
+  <div class="{{ if $currentSeries }}flex flex-col gap-10 lg:flex-row lg:items-start{{ end }}">
+
+    <div class="{{ if $currentSeries }}min-w-0 flex-1{{ end }}">
+
+      <div class="text-muted-foreground mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+
+        {{ if not .Date.IsZero }}
+          <div class="flex items-center gap-2">
+            {{ partial "features/icon.html" (dict "name" "calendar" "size" "sm" "ariaLabel" "") }}
+            <time datetime="{{ .Date.Format `2006-01-02` }}">
+              {{ partial "helpers/date.html" (dict "date" .Date "variant" "long") }}
+            </time>
+          </div>
+        {{ end }}
+
+        {{ with .ReadingTime }}
+          <span class="text-border">·</span>
+          <div class="flex items-center gap-2">
+            {{ partial "features/icon.html" (dict "name" "clock" "size" "sm" "ariaLabel" "") }}
+            <span>{{ T "article.readingTime" (dict "count" .) }}</span>
+          </div>
+        {{ end }}
+
+        {{ with .WordCount }}
+          <span class="text-border">·</span>
+          <div class="flex items-center gap-2">
+            {{ partial "features/icon.html" (dict "name" "text" "size" "sm" "ariaLabel" "") }}
+            <span>{{ T "article.wordCount" (dict "count" .) }}</span>
+          </div>
+        {{ end }}
+
+      </div>
+
+      {{- $taxonomies := .Site.Taxonomies -}}
+      {{- if $taxonomies -}}
+
+        <div class="flex flex-wrap gap-x-6 gap-y-3">
+
+          {{- range $taxonomyName, $taxonomy := $taxonomies -}}
+            {{- $terms := $.GetTerms $taxonomyName -}}
+
+            {{- if $terms -}}
+
+              <div class="flex items-center gap-2">
+
+                <span class="text-muted-foreground">
+                  {{ partial "features/icon.html" (dict "name" $taxonomyName "size" "sm" "ariaLabel" "") }}
+                </span>
+
+                {{- $taxonomyLabel := $taxonomyName | humanize -}}
+
+                {{- with $.Site.GetPage (printf "/%s" $taxonomyName) -}}
+                  {{- $taxonomyLabel = .LinkTitle | default .Title -}}
+                {{- end -}}
+
+                <span class="text-muted-foreground text-sm">
+                  {{ $taxonomyLabel }}:
+                </span>
+
+                <div class="flex flex-wrap gap-1.5">
+
+                  {{- range $terms -}}
+
+                    <a
+                      href="{{ .RelPermalink }}"
+                      class="text-foreground decoration-border hover:decoration-foreground text-sm underline underline-offset-4 transition-colors"
+                    >
+                      {{ .LinkTitle }}
+                    </a>
+
+                  {{- end -}}
+
+                </div>
+
+              </div>
+
+            {{- end -}}
+
+          {{- end -}}
+
+        </div>
+
+      {{- end -}}
+
+    </div>
+
+    {{- if $currentSeries -}}
+
+      <div
+        class="border-border w-full border-t pt-7 lg:w-80 lg:border-t-0 lg:border-l lg:pl-8 lg:pt-0"
+        id="series-container"
+      >
+
+        <div class="mb-4 flex items-center justify-between">
+
+          <div class="flex items-center gap-2">
+
+            {{ partial "features/icon.html" (dict "name" "book" "size" "sm" "ariaLabel" "") }}
+
+            <span class="text-foreground text-sm font-semibold">
+              Series
+            </span>
+
+          </div>
+
+          <a
+            href="#"
+            id="series-link-btn"
+            class="text-muted-foreground hover:text-foreground rounded-md p-1.5 transition-colors"
+            aria-label="Open series"
+          >
+            {{ partial "features/icon.html" (dict "name" "external-link" "size" "sm") }}
+          </a>
+
+        </div>
+
+        <div
+          class="mb-4 flex gap-1 overflow-x-auto no-scrollbar"
+          id="series-tabs"
+        >
+
+          {{- range $dataIndex, $seriesPage := $currentSeries -}}
+
+            {{- $seriesPages := $seriesPage.Pages.ByParam "series_order" -}}
+            {{- $totalCount := len $seriesPages -}}
+            {{- $currentIndex := 0 -}}
+
+            {{- range $idx, $p := $seriesPages -}}
+
+              {{- if eq $p.RelPermalink $.RelPermalink -}}
+                {{- $currentIndex = add $idx 1 -}}
+              {{- end -}}
+
+            {{- end -}}
+
+            <button
+              onclick="switchSeries({{ $dataIndex }})"
+              class="series-tab-btn shrink-0 rounded-md px-3 py-1.5 text-sm transition-colors {{ if eq $dataIndex 0 }}bg-accent text-foreground{{ else }}text-muted-foreground hover:text-foreground hover:bg-accent/50{{ end }}"
+              data-index="{{ $dataIndex }}"
+            >
+              <span class="font-medium">
+                {{ $seriesPage.LinkTitle }}
+              </span>
+
+              <span class="text-muted-foreground ml-1 text-xs">
+                {{ $currentIndex }}/{{ $totalCount }}
+              </span>
+            </button>
+
+          {{- end -}}
+
+        </div>
+
+        <div>
+
+          {{- range $dataIndex, $seriesPage := $currentSeries -}}
+
+            {{- $seriesPages := $seriesPage.Pages.ByParam "series_order" -}}
+
+            <nav
+              id="series-content-{{ $dataIndex }}"
+              class="series-content transition-opacity duration-300 {{ if eq $dataIndex 0 }}block opacity-100{{ else }}hidden opacity-0{{ end }}"
+              data-link="{{ $seriesPage.RelPermalink }}"
+            >
+
+              <ol class="space-y-0.5">
+
+                {{- range $index, $page := $seriesPages -}}
+
+                  {{- $isCurrent := eq $page.RelPermalink $.RelPermalink -}}
+
+                  <li>
+
+                    <a
+                      href="{{ $page.RelPermalink }}"
+                      class="group flex items-center gap-3 rounded-md px-2.5 py-2 text-sm transition-colors {{ if $isCurrent }}text-foreground bg-accent font-medium{{ else }}text-muted-foreground hover:bg-accent/50 hover:text-foreground{{ end }}"
+                      {{ if $isCurrent }}aria-current="page"{{ end }}
+                    >
+
+                      <span
+                        class="w-5 shrink-0 font-mono text-xs {{ if $isCurrent }}text-foreground{{ else }}text-muted-foreground/50{{ end }}"
+                      >
+                        {{ printf "%02d" (add $index 1) }}
+                      </span>
+
+                      <span class="min-w-0 flex-1 truncate">
+                        {{ $page.LinkTitle }}
+                      </span>
+
+                      {{- if $isCurrent -}}
+
+                        <svg
+                          class="h-3.5 w-3.5 shrink-0"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+
+                      {{- end -}}
+
+                    </a>
+
+                  </li>
+
+                {{- end -}}
+
+              </ol>
+
+            </nav>
+
+          {{- end -}}
+
+        </div>
+
+        <script>
+          function switchSeries(index) {
+            document.querySelectorAll('.series-tab-btn').forEach(btn => {
+              const isTarget = parseInt(btn.dataset.index) === index;
+
+              if (isTarget) {
+                btn.classList.add('bg-accent', 'text-foreground');
+                btn.classList.remove('text-muted-foreground');
+              } else {
+                btn.classList.remove('bg-accent', 'text-foreground');
+                btn.classList.add('text-muted-foreground');
+              }
+            });
+
+            document.querySelectorAll('.series-content').forEach(content => {
+              content.classList.add('hidden', 'opacity-0');
+              content.classList.remove('block', 'opacity-100');
+            });
+
+            const targetContent =
+              document.getElementById(`series-content-${index}`);
+
+            if (targetContent) {
+              targetContent.classList.remove('hidden', 'opacity-0');
+              targetContent.classList.add('block', 'opacity-100');
+
+              const linkBtn =
+                document.getElementById('series-link-btn');
+
+              if (linkBtn) {
+                linkBtn.href = targetContent.dataset.link;
+              }
+            }
+          }
+
+          document.addEventListener('DOMContentLoaded', () => {
+            const activeContent =
+              document.querySelector('.series-content.block');
+
+            if (activeContent) {
+              const linkBtn =
+                document.getElementById('series-link-btn');
+
+              if (linkBtn) {
+                linkBtn.href = activeContent.dataset.link;
+              }
+            }
+          });
+        </script>
+
+      </div>
+
+    {{- end -}}
+
+  </div>
+
+</div>

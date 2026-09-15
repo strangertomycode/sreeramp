@@ -1,0 +1,47 @@
+{{ define "main" }}
+  {{- if .Params.cover -}}
+    {{- partial "content/image-processor.html" (dict
+      "context" .
+      "src" .Params.cover
+      "alt" .Title
+      "enableModal" false
+      "enableResponsive" true
+      "enablePlaceholder" false
+      "outputType" "data"
+      )
+    -}}
+    {{- $coverImage := .Scratch.Get "imageUrl" -}}
+
+    {{- if $coverImage -}}
+      <div class="mb-8 overflow-hidden rounded-2xl">
+        <img
+          src="{{ $coverImage }}"
+          alt="{{ .Title }}"
+          class="aspect-video max-h-[50vh] w-full object-cover md:max-h-[60vh]"
+          loading="eager"
+        />
+      </div>
+    {{- end -}}
+  {{ end }}
+
+
+  <header class="mb-8">
+    {{ partial "content/post-meta.html" . }}
+  </header>
+
+  <article class="prose prose-neutral dark:prose-invert mb-12 max-w-none">
+    {{ .Content }}
+  </article>
+
+
+
+
+  {{ partial "content/post-navigation.html" . }}
+
+
+
+
+
+
+
+{{ end }}
