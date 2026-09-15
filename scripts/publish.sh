@@ -26,7 +26,7 @@ echo "Building the Hugo site locally (sanity check before pushing)..."
 hugo --minify
 
 echo "Staging and committing..."
-git add .
+git add -A
 if git diff --cached --quiet; then
   echo "No changes to commit."
 else
