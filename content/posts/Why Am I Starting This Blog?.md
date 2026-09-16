@@ -1,9 +1,14 @@
 ---
 title: Why Am I Starting This Blog?
 date: 2026-09-16
-draft: true
+draft: false
 description: The reason I am starting this blog
 tags:
+  - first-post
+  - me
+  - myself
+  - i
+  - weird-thoughts
 ---
 
 Starting something doesn't mean I have it all figured out. 
