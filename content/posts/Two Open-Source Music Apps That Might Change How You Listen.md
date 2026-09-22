@@ -1,7 +1,7 @@
 ---
 title: Two Open-Source Music Apps That Might Change How You Listen
 date: 2026-09-18
-draft: true
+draft: false
 description: |-
   Discover two open-source music streaming apps that offer a different way to listen to your favorite music.
   A quick look at what they offer, why they caught my attention, and why you might want to give them a try.
