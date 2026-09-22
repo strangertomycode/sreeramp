@@ -33,5 +33,5 @@ Neither app is perfect, and both depend on YouTube’s services, so their reliab
 
 Thank you for reading! 😄
 
-**SimpMusic**: [https://github-store.org/app?repo=maxrave-dev/SimpMusic](https://github-store.org/app?repo=maxrave-dev/SimpMusic)
-**VIVI**: [https://github-store.org/app?repo=vivizzz007/vivi-music](https://github-store.org/app?repo=vivizzz007/vivi-music)
+- **SimpMusic**: [https://github-store.org/app?repo=maxrave-dev/SimpMusic](https://github-store.org/app?repo=maxrave-dev/SimpMusic)
+- **VIVI**: [https://github-store.org/app?repo=vivizzz007/vivi-music](https://github-store.org/app?repo=vivizzz007/vivi-music)
