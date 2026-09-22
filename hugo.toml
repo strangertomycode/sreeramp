@@ -1,6 +1,6 @@
-baseURL = "https://strangertomycode.github.io/wordsnooneaskedfor/"
+baseURL = "https://strangertomycode.github.io/sreeramp/"
 locale = "en-us"
-title = "words no one asked for"
+title = "Sreeram P"
 
 [module]
   [module.hugoVersion]
