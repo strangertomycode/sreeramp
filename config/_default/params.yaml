@@ -9,7 +9,7 @@ images:
 
 # Favicon
 favicon:
-  svg: "/favicon.png" # SVG format favicon (recommended)
+  svg: "/images/favicon.svg" # SVG format favicon (recommended)
 
 # Author info
 author:
