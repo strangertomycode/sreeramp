@@ -14,7 +14,7 @@ import shutil
 
 # --- EDIT THESE THREE PATHS FOR YOUR OWN MACHINE ---
 POSTS_DIR = "content/posts"
-OBSIDIAN_ATTACHMENTS_DIR = "/home/strangertomyheart/Sync/Notebook/04 - Assets"
+OBSIDIAN_ATTACHMENTS_DIR = "/home/strangertomyheart/Sync/Notebook/05 - Assets"
 STATIC_IMAGES_DIR = "static/images"
 # -----------------------------------------------------
 

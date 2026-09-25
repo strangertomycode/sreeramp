@@ -6,7 +6,7 @@ set -euo pipefail
 # Configuration
 # ============================================================
 
-OBSIDIAN_PUBLIC_DIR="/home/strangertomyheart/Sync/Notebook/01 - Inbox/public"
+OBSIDIAN_PUBLIC_DIR="/home/strangertomyheart/Sync/Notebook/03 - Public"
 
 # ============================================================
 # Setup
