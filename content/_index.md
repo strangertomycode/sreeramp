@@ -2,7 +2,7 @@
 dismissible: true
 title: "Home"
 author:
-  name: "Sreeram P"
+  name: "This is a test"
   title: "Backend Developer (Python/Django) | AI-Integrated Systems"
   description: "I build backend systems that hold up under real conditions, not just demos, JWT authentication, role-based access control, and database-level concurrency handling, alongside AI-integrated tools using LangChain. M.Tech in AI & Software Engineering, GATE 2025 and UGC-NET qualified."
   avatar: "/images/profile-photo.png"
