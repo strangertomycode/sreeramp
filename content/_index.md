@@ -8,10 +8,10 @@ author:
   avatar: "/images/profile-photo.png"
   social:
     - name: "LinkedIn"
-      url: "[https://www.linkedin.com/in/sreeram-p](https://www.linkedin.com/in/sreeram-p)"
+      url: "https://www.linkedin.com/in/sreeram-p"
       icon: "linkedin"
     - name: "GitHub"
-      url: "[https://github.com/strangertomycode](https://github.com/strangertomycode)"
+      url: "https://github.com/strangertomycode"
       icon: "github"
     - name: "Email"
       url: "mailto:sreeramp562@gmail.com"

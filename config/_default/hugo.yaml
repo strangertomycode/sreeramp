@@ -7,27 +7,9 @@ title: Sreeram P
 hasCJKLanguage: true
 enableEmoji: true
 
-
-# Main Section Configuration (Optional)
-# If not configured, Hugo will automatically select the section with the most pages
-# This configuration affects functions such as recent articles on the homepage, search index, and archive pages
-mainSections: ["posts"]  # Multiple values can be configured, e.g. ["posts", "blog", "articles"]
-
-permalinks:
-  posts: /posts/:slug/
-  projects: /projects/:slug/
-  pages: /:slug/
-
-# pagination
-pagination:
-  pagerSize: 6
-  path: "page"
-
-
-taxonomies:
-  category: categories
-  tag: tags
-  series: series
+disableKinds:
+  - taxonomy
+  - term
 
 markup:
   tableOfContents:

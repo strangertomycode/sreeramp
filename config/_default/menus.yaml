@@ -78,14 +78,6 @@ main:
     pageRef: /
     weight: 10
 
-  - name: Blog
-    pageRef: /posts/
-    weight: 20
-
-  - name: About
-    pageRef: /about/
-    weight: 30
-
 # footer social link
 # social:
 #   - name: Instagram

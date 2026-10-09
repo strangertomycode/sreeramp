@@ -1,9 +1,9 @@
 # Basic site info with SEO
-description: "A personal blog about thoughts, ideas, things I make, and things I find worth writing down."
-keywords: ["Personal Blog", "Writing", "Notes"]
+description: "Portfolio of Sreeram P, a backend developer focused on Python, Django, and AI-integrated systems."
+keywords: ["Python", "Django", "Backend Development", "AI", "Portfolio"]
 defaultAuthor: "Sreeram P"
 language: "en"
-shortName: "words no one asked for" # PWA
+shortName: "Sreeram P" # PWA
 images:
   - "/images/og-default.avif"
 
@@ -14,16 +14,16 @@ favicon:
 # Author info
 author:
   name: "Sreeram P"
-  title: "strangertomyheart"
-  description: "Just writing things down."
-  avatar: "/images/avatar.jpg"
+  title: "Backend Developer"
+  description: "Focused on Python, Django, and AI-integrated systems."
+  avatar: "/images/profile-photo.png"
   social:
-    - name: "Instagram" 
-      url: "https://www.instagram.com/yourusername" 
-      icon: "instagram"
     - name: "GitHub"
-      url: "https://github.com/username"
+      url: "https://github.com/strangertomycode"
       icon: "github"
+    - name: "LinkedIn"
+      url: "https://www.linkedin.com/in/sreeram-p"
+      icon: "linkedin"
 
 # Header configuration (modularized)
 header:
@@ -100,7 +100,7 @@ themes:
 
 # Home page configuration
 home:
-  recentPostsCount: 6 # Number of recent posts to show on the home page
+  # recentPostsCount: 6 # Number of recent posts to show on the home page
 
   # Content order configuration - customize the order of home page sections
   # Available sections: author-section, recent-posts, featured-projects, page-content
@@ -108,71 +108,8 @@ home:
   contentOrder:
     - author-section
     - page-content
-    - recent-posts
+    # - recent-posts
     # - featured-projects.html
-
-# Post configuration
-post:
-  showRelated: false # show related posts
-  relatedPostsCount: 3 # posts number
-  license:
-    show: false
-    author: "Sreeram P"
-    name: ""
-    description: ""
-    url: ""
-    displayName: ""
-
-# Comments
-comments:
-  enabled: false
-  # giscus, disqus, utterances, waline, artalk, twikoo, comentario
-  system: "giscus"
-  giscus:
-    repo: ""
-    repoId: ""
-    category: ""
-    categoryId: ""
-    mapping: "pathname"
-    strict: "0"
-    reactionsEnabled: "1"
-    emitMetadata: "0"
-    inputPosition: "bottom"
-    theme: "preferred_color_scheme"
-    lang: "en"
-  disqus:
-    shortname: ""
-  utterances:
-    repo: ""
-    issueTerm: "pathname"
-    label: "comment"
-    theme: "preferred-color-scheme"
-  waline:
-    serverURL: ""
-    lang: "en"
-  artalk:
-    server: ""
-    site: ""
-    locale: "en" # String|Object|"auto"
-    darkMode: "auto"
-    gravatar:
-      mirror: ""
-  twikoo:
-    envId: ""
-    region: ""
-    path: ""
-    lang: "en"
-  comentario:
-    server: ""
-    lang: "en"
-    theme: "" # light, dark, or empty to follow browser preference
-    domainId: ""
-    cssOverride: ""
-    liveUpdate: true
-    maxLevel: 10
-    noFonts: false
-    autoInit: true
-    autoNonInteractiveSso: false
 
 # Analytics
 analytics:
