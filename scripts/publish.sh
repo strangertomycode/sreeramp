@@ -1,8 +1,8 @@
-
-#!/bin/bash
+```bash
+#!/usr/bin/env bash
 set -euo pipefail
 
-OBSIDIAN_PORTFOLIO_DIR="/home/strangertomyheart/Sync/Notebook/03 - Public/Portfolio"
+OBSIDIAN_PORTFOLIO_DIR="$HOME/Sync/Notebook/03 - Public/Portfolio"
 PROFILE_SOURCE="$OBSIDIAN_PORTFOLIO_DIR/Profile.md"
 PORTFOLIO_SOURCE="$OBSIDIAN_PORTFOLIO_DIR/Portfolio.md"
 
@@ -10,20 +10,36 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
-for cmd in python3 hugo; do
+# Check required commands.
+for cmd in python3 hugo git; do
     if ! command -v "$cmd" >/dev/null 2>&1; then
         echo "Error: '$cmd' is not installed or not in PATH."
         exit 1
     fi
 done
 
+# Check required Obsidian files.
 for file in "$PROFILE_SOURCE" "$PORTFOLIO_SOURCE"; do
-    if [ ! -f "$file" ]; then
+    if [[ ! -f "$file" ]]; then
         echo "Error: Required file not found:"
         echo "$file"
         exit 1
     fi
 done
+
+# Require the main branch and a clean working tree.
+BRANCH="$(git branch --show-current)"
+if [[ "$BRANCH" != "main" ]]; then
+    echo "Error: Expected branch 'main', but currently on '$BRANCH'."
+    exit 1
+fi
+
+if [[ -n "$(git status --porcelain)" ]]; then
+    echo "Error: Your working tree has uncommitted changes."
+    echo "Commit, stash, or otherwise resolve them before publishing."
+    git status --short
+    exit 1
+fi
 
 echo
 echo "==> Combining Obsidian profile and portfolio..."
@@ -54,7 +70,10 @@ def read_properties(path):
         if not line or line.startswith("#"):
             continue
 
-        match = re.match(r"^([A-Za-z_][A-Za-z0-9_]*):\s*(.*?)\s*$", line)
+        match = re.match(
+            r"^([A-Za-z_][A-Za-z0-9_]*):\s*(.*?)\s*$",
+            line,
+        )
         if not match:
             raise SystemExit(f"Error: Cannot read property line: {line}")
 
@@ -75,7 +94,9 @@ required = ["name", "role", "description", "avatar", "linkedin", "github", "emai
 missing = [key for key in required if not profile.get(key)]
 
 if missing:
-    raise SystemExit("Error: Missing Profile.md properties: " + ", ".join(missing))
+    raise SystemExit(
+        "Error: Missing Profile.md properties: " + ", ".join(missing)
+    )
 
 def yaml_string(value):
     return json.dumps(str(value), ensure_ascii=False)
@@ -122,8 +143,23 @@ echo "==> Building Hugo site..."
 hugo --minify
 
 echo
-echo "==> Current Git changes:"
-git status --short
+echo "==> Checking generated portfolio changes..."
+git add content/_index.md
+
+if git diff --cached --quiet -- content/_index.md; then
+    echo "No portfolio content changes to publish."
+    exit 0
+fi
 
 echo
-echo "Build complete. No changes were committed or pushed."
+echo "==> Committing portfolio update..."
+git commit -m "Update portfolio"
+
+echo
+echo "==> Pushing to GitHub..."
+git push origin "$BRANCH"
+
+echo
+echo "Portfolio pushed successfully!"
+echo "GitHub Pages will deploy the update."
+```
