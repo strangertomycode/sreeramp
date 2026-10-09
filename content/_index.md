@@ -6,16 +6,13 @@ author:
   title: "Backend Developer (Python/Django) | AI-Integrated Systems"
   description: "I build backend systems that hold up under real conditions, not just demos, JWT authentication, role-based access control, and database-level concurrency handling, alongside AI-integrated tools using LangChain. M.Tech in AI & Software Engineering, GATE 2025 and UGC-NET qualified."
   avatar: "/images/profile-photo.png"
-
   social:
     - name: "LinkedIn"
-      url: "https://www.linkedin.com/in/sreeram-p"
+      url: "[https://www.linkedin.com/in/sreeram-p](https://www.linkedin.com/in/sreeram-p)"
       icon: "linkedin"
-
     - name: "GitHub"
-      url: "https://github.com/strangertomycode"
+      url: "[https://github.com/strangertomycode](https://github.com/strangertomycode)"
       icon: "github"
-
     - name: "Email"
       url: "mailto:sreeramp562@gmail.com"
       icon: "email"

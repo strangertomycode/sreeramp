@@ -1,211 +1,129 @@
-#!/bin/bash
 
+#!/bin/bash
 set -euo pipefail
 
-# ============================================================
-# Configuration
-# ============================================================
-
-OBSIDIAN_PUBLIC_DIR="/home/strangertomyheart/Sync/Notebook/03 - Public"
-
-# ============================================================
-# Setup
-# ============================================================
+OBSIDIAN_PORTFOLIO_DIR="/home/strangertomyheart/Sync/Notebook/03 - Public/Portfolio"
+PROFILE_SOURCE="$OBSIDIAN_PORTFOLIO_DIR/Profile.md"
+PORTFOLIO_SOURCE="$OBSIDIAN_PORTFOLIO_DIR/Portfolio.md"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-
 cd "$PROJECT_ROOT"
 
-# ============================================================
-# Check required commands
-# ============================================================
-
-for cmd in git rsync python3 hugo; do
+for cmd in python3 hugo; do
     if ! command -v "$cmd" >/dev/null 2>&1; then
         echo "Error: '$cmd' is not installed or not in PATH."
         exit 1
     fi
 done
 
-# ============================================================
-# Check Obsidian source directory
-# ============================================================
-
-if [ ! -d "$OBSIDIAN_PUBLIC_DIR" ]; then
-    echo "Error: Obsidian public directory not found:"
-    echo "$OBSIDIAN_PUBLIC_DIR"
-    exit 1
-fi
-
-# ============================================================
-# Sync blog posts
-# ============================================================
+for file in "$PROFILE_SOURCE" "$PORTFOLIO_SOURCE"; do
+    if [ ! -f "$file" ]; then
+        echo "Error: Required file not found:"
+        echo "$file"
+        exit 1
+    fi
+done
 
 echo
-echo "==> Syncing blog posts from Obsidian..."
+echo "==> Combining Obsidian profile and portfolio..."
 
-mkdir -p content/posts
-
-rsync -av --delete \
-    "$OBSIDIAN_PUBLIC_DIR/blog-posts/" \
-    content/posts/
-
-# ============================================================
-# Sync portfolio
-# ============================================================
-
-echo
-echo "==> Syncing portfolio from Obsidian..."
-
-PORTFOLIO_SOURCE="$OBSIDIAN_PUBLIC_DIR/Portfolio.md"
-PORTFOLIO_DEST="content/_index.md"
-
-if [ ! -f "$PORTFOLIO_SOURCE" ]; then
-    echo "Error: Portfolio.md not found:"
-    echo "$PORTFOLIO_SOURCE"
-    exit 1
-fi
-
-python3 - "$PORTFOLIO_SOURCE" "$PORTFOLIO_DEST" <<'PY'
-from pathlib import Path
+python3 - "$PROFILE_SOURCE" "$PORTFOLIO_SOURCE" "content/_index.md" <<'PY'
+import json
+import re
 import sys
+from pathlib import Path
 
-source = Path(sys.argv[1])
-destination = Path(sys.argv[2])
+profile_path, portfolio_path, output_path = map(Path, sys.argv[1:])
 
-portfolio_content = source.read_text(encoding="utf-8")
-existing = destination.read_text(encoding="utf-8")
+def read_properties(path):
+    content = path.read_text(encoding="utf-8")
+    parts = content.split("---", 2)
 
-parts = existing.split("---", 2)
+    if len(parts) < 3 or parts[0].strip():
+        raise SystemExit(
+            f"Error: {path.name} must begin with YAML properties "
+            "between opening and closing --- lines."
+        )
 
-if len(parts) != 3:
+    properties = {}
+
+    for line in parts[1].splitlines():
+        line = line.strip()
+
+        if not line or line.startswith("#"):
+            continue
+
+        match = re.match(r"^([A-Za-z_][A-Za-z0-9_]*):\s*(.*?)\s*$", line)
+        if not match:
+            raise SystemExit(f"Error: Cannot read property line: {line}")
+
+        key, value = match.groups()
+
+        if value.startswith('"'):
+            value = json.loads(value)
+        elif value.startswith("'") and value.endswith("'"):
+            value = value[1:-1].replace("''", "'")
+
+        properties[key] = value
+
+    return properties
+
+profile = read_properties(profile_path)
+
+required = ["name", "role", "description", "avatar", "linkedin", "github", "email"]
+missing = [key for key in required if not profile.get(key)]
+
+if missing:
+    raise SystemExit("Error: Missing Profile.md properties: " + ", ".join(missing))
+
+def yaml_string(value):
+    return json.dumps(str(value), ensure_ascii=False)
+
+front_matter = f"""---
+dismissible: true
+title: "Home"
+author:
+  name: {yaml_string(profile["name"])}
+  title: {yaml_string(profile["role"])}
+  description: {yaml_string(profile["description"])}
+  avatar: {yaml_string(profile["avatar"])}
+  social:
+    - name: "LinkedIn"
+      url: {yaml_string(profile["linkedin"])}
+      icon: "linkedin"
+    - name: "GitHub"
+      url: {yaml_string(profile["github"])}
+      icon: "github"
+    - name: "Email"
+      url: {yaml_string(profile["email"])}
+      icon: "email"
+---
+"""
+
+portfolio = portfolio_path.read_text(encoding="utf-8").strip()
+
+if portfolio.startswith("---"):
     raise SystemExit(
-        "Error: Could not find valid Hugo front matter in content/_index.md"
+        "Error: Portfolio.md should contain only Markdown, "
+        "without YAML front matter."
     )
 
-front_matter = parts[0] + "---" + parts[1] + "---"
-
-destination.write_text(
-    front_matter.rstrip() + "\n\n" + portfolio_content.lstrip(),
+output_path.write_text(
+    front_matter + "\n" + portfolio + "\n",
     encoding="utf-8",
 )
+
+print("Profile and portfolio combined successfully.")
 PY
-
-# ============================================================
-# Sync About page
-# ============================================================
-
-echo
-echo "==> Syncing About page from Obsidian..."
-
-ABOUT_SOURCE="$OBSIDIAN_PUBLIC_DIR/About.md"
-ABOUT_DEST="content/about/_index.md"
-
-if [ ! -f "$ABOUT_SOURCE" ]; then
-    echo "Error: About.md not found:"
-    echo "$ABOUT_SOURCE"
-    exit 1
-fi
-
-python3 - "$ABOUT_SOURCE" "$ABOUT_DEST" <<'PY'
-from pathlib import Path
-import sys
-
-source = Path(sys.argv[1])
-destination = Path(sys.argv[2])
-
-about_content = source.read_text(encoding="utf-8")
-existing = destination.read_text(encoding="utf-8")
-
-parts = existing.split("---", 2)
-
-if len(parts) != 3:
-    raise SystemExit(
-        "Error: Could not find valid Hugo front matter in "
-        "content/about/_index.md"
-    )
-
-front_matter = parts[0] + "---" + parts[1] + "---"
-
-destination.write_text(
-    front_matter.rstrip() + "\n\n" + about_content.lstrip(),
-    encoding="utf-8",
-)
-PY
-
-# ============================================================
-# Fix Obsidian image links
-# ============================================================
-
-echo
-echo "==> Fixing Obsidian-style image links..."
-
-python3 scripts/fix_images.py
-
-# ============================================================
-# Build Hugo site
-# ============================================================
 
 echo
 echo "==> Building Hugo site..."
-
 hugo --minify
 
 echo
-echo "==> Hugo build successful."
-
-# ============================================================
-# Git status
-# ============================================================
+echo "==> Current Git changes:"
+git status --short
 
 echo
-echo "==> Checking Git changes..."
-
-if git diff --quiet && git diff --cached --quiet && [ -z "$(git status --porcelain)" ]; then
-    echo "No changes detected."
-    echo "Nothing to commit or push."
-    exit 0
-fi
-
-# ============================================================
-# Commit changes
-# ============================================================
-
-echo
-echo "==> Staging changes..."
-
-git add -A
-
-if git diff --cached --quiet; then
-    echo "No staged changes."
-    echo "Nothing to commit or push."
-    exit 0
-fi
-
-COMMIT_MESSAGE="Update site - $(date '+%Y-%m-%d %H:%M:%S')"
-
-echo
-echo "==> Creating commit..."
-echo "    $COMMIT_MESSAGE"
-
-git commit -m "$COMMIT_MESSAGE"
-
-# ============================================================
-# Push changes
-# ============================================================
-
-echo
-echo "==> Pushing to GitHub..."
-
-git push origin master
-
-# ============================================================
-# Done
-# ============================================================
-
-echo
-echo "============================================================"
-echo "Publishing complete."
-echo "============================================================"
-echo
+echo "Build complete. No changes were committed or pushed."
