@@ -73,10 +73,25 @@
 #     params:
 #       icon: rss
 
-main:
-  - name: Home
-    pageRef: /
-    weight: 10
+# main:
+#   - name: Home
+#     pageRef: /
+#     weight: 10
+#   - name: Skills
+#     pageRef: "#skills"
+#     weight: 20
+#   - name: Experience
+#     pageRef: "/#experience"
+#     weight: 30
+#   - name: Projects
+#     pageRef: "/#projects"
+#     weight: 40
+#   - name: Education
+#     pageRef: "/#education"
+#     weight: 50
+#   - name: Certifications
+#     pageRef: "/#certifications"
+#     weight: 60
 
 # footer social link
 # social:
@@ -91,3 +106,19 @@ main:
 #     weight: 20
 #     params:
 #       icon: github
+
+
+
+main:
+  - name: Skills
+    url: /#skills
+    weight: 10
+
+  - name: Projects
+    url: /#projects
+    weight: 30
+
+  - name: Education
+    url: /#education
+    weight: 40
+
