@@ -1,4 +1,3 @@
-```bash
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -27,10 +26,10 @@ for file in "$PROFILE_SOURCE" "$PORTFOLIO_SOURCE"; do
     fi
 done
 
-# Require the main branch and a clean working tree.
+# Require the master branch and a clean working tree.
 BRANCH="$(git branch --show-current)"
-if [[ "$BRANCH" != "main" ]]; then
-    echo "Error: Expected branch 'main', but currently on '$BRANCH'."
+if [[ "$BRANCH" != "master" ]]; then
+    echo "Error: Expected branch 'master', but currently on '$BRANCH'."
     exit 1
 fi
 
@@ -162,4 +161,3 @@ git push origin "$BRANCH"
 echo
 echo "Portfolio pushed successfully!"
 echo "GitHub Pages will deploy the update."
-```
